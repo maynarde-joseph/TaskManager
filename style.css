@@ -1,0 +1,71 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body{
+  height: 700px;
+  background-color: #faf8ef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+#mainpage{
+  display: flex;
+  width: 700px;
+  height: 700px;
+  background-color: beige;
+  margin: 0;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+  gap: 10px;
+}
+
+#leftside{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 67%;
+  margin: 0;
+  gap: 10px;
+  /* flex-wrap: wrap; */
+}
+
+#calender{
+  /* display: flex; */
+  flex: 1 1 27%;
+  height: 700px;
+  background-color: blanchedalmond;
+  margin: 0;
+}
+
+#alltasks{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 78%;
+  /* width: 450px; */
+  height: 300px;
+  background-color: bisque;
+  margin: 0;
+  gap: 10px;
+}
+
+#taskbar{
+  flex: 1 1 10%;
+  background-color: rgb(149, 131, 107);
+}
+
+#viewboard{
+  flex: 1 1 88%;
+  background-color: rgb(228, 187, 132);
+}
+
+#textbox{
+  /* width: 450px; */
+  flex: 1 1 18%;
+  height: 150px;
+  font-weight: lighter;
+  background-color: aliceblue;
+  margin: 0;
+}
