@@ -12,15 +12,55 @@ body{
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+#YearNum{
+  max-height: 20%;
+}
+
+#monthbox{
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  max-height: 80%;
+  gap: 5px;
+
+  /* position: absolute; */
+}
+
+.collapsible {
+  background-color:rgb(124, 178, 225);
+  color: #444;
+  cursor: pointer;
+  padding: 13px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 12px;
+  border-radius: 20px;
+}
+
+.active, .collapsible:hover {
+  background-color:rgb(75, 159, 233);}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color:rgb(158, 199, 235);
+  border-radius: 20px;
+}
+
 #mainpage{
+  margin-top: 40px;
   display: flex;
   width: 700px;
   height: 700px;
   background-color: beige;
-  margin: 0;
   flex-direction: row;
-  /* flex-wrap: wrap; */
   gap: 10px;
+  border-radius: 10px;
 }
 
 #leftside{
@@ -29,43 +69,103 @@ body{
   flex: 1 1 67%;
   margin: 0;
   gap: 10px;
-  /* flex-wrap: wrap; */
+  border-radius: 10px;
 }
 
 #calender{
-  /* display: flex; */
   flex: 1 1 27%;
   height: 700px;
   background-color: blanchedalmond;
   margin: 0;
+  border-radius: 10px;
 }
 
 #alltasks{
   display: flex;
   flex-direction: column;
   flex: 1 1 78%;
-  /* width: 450px; */
   height: 300px;
   background-color: bisque;
   margin: 0;
   gap: 10px;
+  border-radius: 10px;
 }
 
 #taskbar{
   flex: 1 1 10%;
   background-color: rgb(149, 131, 107);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.topnav input[type=text] {
+  float: left;
+  border: none;
+  margin-top: 10px;
+  margin-left: 16px;
+  font-size: 14px;
+  height: 60%;
+  border-radius: 3px;
+}
+
+.filter {
+  width: 20%;
+  height: 60%;
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-left: 100px;
+  font-size: 14px;
+  background: #cfc8c1;
+  text-decoration: none;
+  color: #f9f6f2;
+  cursor: pointer;
+  display: block;
+  display: flex; /* Use flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text within button */
+  font-weight:normal;
+}
+
+.AddNew {
+  width: 20%;
+  height: 60%;
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 14px;
+  background: #cfc8c1;
+  text-decoration: none;
+  color: #f9f6f2;
+  cursor: pointer;
+  display: block;
+  display: flex; /* Use flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text within button */
+  font-weight:normal;
 }
 
 #viewboard{
   flex: 1 1 88%;
   background-color: rgb(228, 187, 132);
+  border-radius: 10px;
 }
 
 #textbox{
-  /* width: 450px; */
   flex: 1 1 18%;
   height: 150px;
   font-weight: lighter;
-  background-color: aliceblue;
+  background-color: rgb(117, 212, 227);
   margin: 0;
+  border-radius: 10px;
+}
+
+.textboxtext {
+  padding-left: 10px;
+}
+
+.info {
+  padding-left: 10px;
 }
