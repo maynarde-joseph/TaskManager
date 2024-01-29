@@ -164,9 +164,9 @@ body{
   flex-direction: row;
 }
 
-.task-body {
+/* .task-body {
 
-}
+} */
 
 #viewboard{
   flex: 1 1 88%;
