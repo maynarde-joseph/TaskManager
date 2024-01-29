@@ -151,6 +151,14 @@ body{
   flex: 1 1 88%;
   background-color: rgb(228, 187, 132);
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  max-height: 88%;
+  gap: 5px;
+
 }
 
 #textbox{
