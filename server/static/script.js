@@ -14,6 +14,19 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 
+let allTasks = document.querySelectorAll('.task-main');
+
+// Add event listener to each pin button
+allTasks.forEach(xtask => {
+  const pinButton = xtask.querySelector('.pin-button');
+  pinButton.addEventListener('click', (event) => {
+    // Prevent the click event from bubbling up to the card
+    event.stopPropagation();
+
+    // Your pin button logic here (e.g., moving the card to the top)
+  });
+});
+
 function createInvoiceDiv(invoice) {
   const div = document.createElement('div');
   div.textContent = `Name: ${invoice.name}, Email: ${invoice.email}`;

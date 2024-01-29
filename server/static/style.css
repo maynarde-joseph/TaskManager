@@ -147,6 +147,27 @@ body{
   font-weight:normal;
 }
 
+.pin-button {
+  flex: 1 1 1%;
+}
+
+.maininfo {
+  flex: 1 1 99%;
+}
+
+/* .task {
+
+} */
+
+.task-main {
+  display: flex;
+  flex-direction: row;
+}
+
+.task-body {
+
+}
+
 #viewboard{
   flex: 1 1 88%;
   background-color: rgb(228, 187, 132);
