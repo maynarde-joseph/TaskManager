@@ -18,6 +18,7 @@ connectToDatabase()
 
     app.use("/invoices", mongoRouter);
     app.use(express.static('static'));
+    app.use("/static", express.static('./static/'));
 
     // Serve the index.html file for any other requests
     app.get('/', (req, res) => {
