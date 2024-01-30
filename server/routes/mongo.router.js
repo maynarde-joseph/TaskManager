@@ -24,7 +24,7 @@ mongoRouter.get("/", async (req, res) => {
 mongoRouter.post("/create", async (req, res) => {
   try {
     // Extract task data from the request body
-    const { Name, Description, DueDate, Priority, Notes } = req.body;
+    const { Name, Description, DueDate, Priority, Notes, Pinned } = req.body;
 
     // Create a new task object based on the schema
     const params = {
@@ -33,7 +33,8 @@ mongoRouter.post("/create", async (req, res) => {
       DueDate: new Date(DueDate), // Convert DueDate to a Date object
       Completed: false,
       Priority: priorityOrder[Priority],
-      Notes
+      Notes,
+      Pinned
     };
 
     // Insert the new task into the database

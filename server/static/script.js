@@ -1,8 +1,44 @@
 import Swal from './sweetalert2/src/sweetalert2.js'
-import task from './classes/tasks.js'
+import Task from './classes/tasks.js'
 
 let allTasks = [];
-// Create a new task
+
+const sortButton = document.querySelector('.sort');
+
+sortButton.addEventListener('click', () => {
+  showSortingPopup()
+  console.log('Sort button clicked');
+});
+
+const filterButton = document.querySelector('.filter');
+
+filterButton.addEventListener('click', () => {
+  showFilteringPopup()
+  console.log('Filter button clicked');
+});
+
+const newTaskButton = document.querySelector('.AddNew');
+
+newTaskButton.addEventListener('click', () => {
+  createTaskPopup();
+  console.log('New Task button clicked');
+});
+
+const searchInput = document.querySelector('.topnav input[type="text"]');
+
+searchInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+
+    const searchQuery = searchInput.value.trim();
+
+    console.log(`Search query: ${searchQuery}`);
+  }
+});
+
+
+
+// YEHHH MATE
 const createTaskPopup = async () => {
   const { value: formValues } = await Swal.fire({
     title: 'Create New Task',
@@ -26,15 +62,16 @@ const createTaskPopup = async () => {
   }
 };
 
-// Update an existing task
-const updateTaskPopup = async (task) => {
+// PERFECT MATE
+const updateTaskPopup = async (taskx) => {
   const { value: formValues } = await Swal.fire({
     title: 'Update Task',
     html:
-      '<input id="swal-input1" class="swal2-input" placeholder="Name" value="' + task.Name + '">' +
-      '<input id="swal-input2" class="swal2-input" placeholder="Description" value="' + task.Description + '">' +
-      '<input id="swal-input3" class="swal2-input" placeholder="Due Date" value="' + task.DueDate + '">' +
-      '<input type="checkbox" id="swal-input4" class="swal2-checkbox" ' + (task.Completed ? 'checked' : '') + '> Completed',
+      '<input id="swal-input1" class="swal2-input" placeholder="Name" value="' + taskx.Name + '">' +
+      '<input id="swal-input2" class="swal2-input" placeholder="Description" value="' + taskx.Description + '">' +
+      '<input id="swal-input3" class="swal2-input" placeholder="Due Date" value="' + taskx.DueDate + '">' +
+      '<br>' +
+      '<input type="checkbox" id="swal-input4" class="swal2-checkbox" ' + (taskx.Completed ? 'checked' : '') + '> Completed',
     focusConfirm: false,
     preConfirm: () => {
       return {
@@ -51,6 +88,183 @@ const updateTaskPopup = async (task) => {
     console.log(formValues);
   }
 };
+
+// Helper function
+function getTaskById(idValue) {
+  return allTasks.find(task => task.id === idValue);
+}
+
+function getIdByTask(task) {
+  return task.id;
+}
+
+// GOOD MATE
+function showSortingPopup() {
+  // Create a template for the popup content
+  const popupContent = `
+    <div>
+      <label for="sortBy">Sort By:</label>
+      <select id="sortBy" name="sortBy">
+        <option value="name">Name</option>
+        <option value="date">Date</option>
+        <option value="priority">Priority</option>
+      </select>
+    </div>
+    <div>
+      <label for="sortFor">Sort For:</label>
+      <input type="text" id="sortFor" name="sortFor" placeholder="ASC or DESC">
+    </div>
+  `;
+
+  // Use Swal.fire() to show the popup with HTML content
+  Swal.fire({
+    title: 'Sort',
+    html: popupContent,
+    showCancelButton: true,
+    confirmButtonText: 'Sort',
+    cancelButtonText: 'Cancel',
+    focusConfirm: false,
+    preConfirm: () => {
+      // Retrieve the values of SortBy and SortFor when the user confirms
+      const sortBy = document.getElementById('sortBy').value;
+      const sortFor = document.getElementById('sortFor').value.toUpperCase(); // Convert to uppercase
+
+      // You can perform validation or further processing here
+      console.log('Sort By:', sortBy);
+      console.log('Sort For:', sortFor);
+
+      // Return the values as an object (or perform further actions)
+      return { sortBy, sortFor };
+    }
+  }).then((result) => {
+    // Handle the result (if needed)
+    if (result.isConfirmed) {
+      console.log('Sorting confirmed!');
+      console.log('Sort By:', result.value.sortBy);
+      console.log('Sort For:', result.value.sortFor);
+      // Perform further actions with the sorting criteria
+    } else {
+      console.log('Sorting canceled.');
+      // Handle cancelation (if needed)
+    }
+  });
+}
+
+// ALSO WORKS LIKE A CHARM MATE
+function showFilteringPopup() {
+  // Create a template for the popup content
+  const popupContent = `
+    <div>
+      <label for="filterBy">Filter By:</label>
+      <select id="filterBy" name="filterBy">
+        <option value="name">Name</option>
+        <option value="date">Date</option>
+        <option value="priority">Priority</option>
+      </select>
+    </div>
+    <div>
+      <label for="filterOrder">Filter Order:</label>
+      <select id="filterOrder" name="filterOrder">
+        <option value="ascending">Ascending</option>
+        <option value="descending">Descending</option>
+      </select>
+    </div>
+  `;
+
+  // Use Swal.fire() to show the popup with HTML content
+  Swal.fire({
+    title: 'Filter',
+    html: popupContent,
+    showCancelButton: true,
+    confirmButtonText: 'Filter',
+    cancelButtonText: 'Cancel',
+    focusConfirm: false,
+    preConfirm: () => {
+      // Retrieve the values of FilterBy and FilterOrder when the user confirms
+      const filterBy = document.getElementById('filterBy').value;
+      const filterOrder = document.getElementById('filterOrder').value;
+
+      // You can perform validation or further processing here
+      console.log('Filter By:', filterBy);
+      console.log('Filter Order:', filterOrder);
+
+      // Return the values as an object (or perform further actions)
+      return { filterBy, filterOrder };
+    }
+  }).then((result) => {
+    // Handle the result (if needed)
+    if (result.isConfirmed) {
+      console.log('Filtering confirmed!');
+      console.log('Filter By:', result.value.filterBy);
+      console.log('Filter Order:', result.value.filterOrder);
+      // Perform further actions with the filtering criteria
+    } else {
+      console.log('Filtering canceled.');
+      // Handle cancelation (if needed)
+    }
+  });
+}
+
+// WORKS LIKE A CHARM MATE
+function showPinConfirmation(taskId) {
+  // Use Swal.fire() to show the popup
+  Swal.fire({
+    title: 'Are you sure you want to pin?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, pin it!',
+    cancelButtonText: 'Cancel',
+    heightAuto: false,
+  }).then((result) => {
+    // Check if the user clicked the "Yes, pin it!" button
+    if (result.isConfirmed) {
+      console.log(`Task with ID ${taskId} pinned!`);
+      // Perform further actions related to pinning the task
+    }
+  });
+}
+
+// WORKS MATE
+function showDeleteConfirmation(taskId) {
+  // Use Swal.fire() to show the popup
+  Swal.fire({
+    title: 'Are you sure you want to delete?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel',
+    heightAuto: false,
+  }).then((result) => {
+    // Check if the user clicked the "Yes, pin it!" button
+    if (result.isConfirmed) {
+      console.log(`Task with ID ${taskId} deleted!`);
+    }
+  });
+}
+
+// CHECKING MATE
+function showCheckConfirmation(taskId) {
+  // Use Swal.fire() to show the popup
+  Swal.fire({
+    title: 'Are you sure you want to mark as complete?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, mark it!',
+    cancelButtonText: 'Cancel',
+    heightAuto: false,
+  }).then((result) => {
+    // mark as complete if the user clicked the "Yes, mark as complete it!" button
+    if (result.isConfirmed) {
+      console.log(`Task with ID ${taskId} marked as complete!`);
+    }
+  });
+}
 
 function handleStyles() {
   var coll = document.getElementsByClassName("collapsible");
@@ -73,31 +287,27 @@ function handleStyles() {
   allCssTasks.forEach(xtask => {
     const pinButton = xtask.querySelector('.pin-button');
     pinButton.addEventListener('click', (event) => {
-      // Prevent the click event from bubbling up to the card
       event.stopPropagation();
-
-      // Your pin button logic here (e.g., moving the card to the top)
+      const taskId = event.target.closest('.task').dataset.taskId;
+      showPinConfirmation(taskId);
     });
     const comButton = xtask.querySelector('.complete-button');
     comButton.addEventListener('click', (event) => {
-      // Prevent the click event from bubbling up to the card
       event.stopPropagation();
-
-      // Your pin button logic here (e.g., moving the card to the top)
+      const taskId = event.target.closest('.task').dataset.taskId;
+      showCheckConfirmation(taskId);
     });
     const ediButton = xtask.querySelector('.edit-button');
     ediButton.addEventListener('click', (event) => {
-      // Prevent the click event from bubbling up to the card
       event.stopPropagation();
-
-      // Your pin button logic here (e.g., moving the card to the top)
+      const taskId = event.target.closest('.task').dataset.taskId;
+      updateTaskPopup(getTaskById(taskId))
     });
     const delButton = xtask.querySelector('.delete-button');
     delButton.addEventListener('click', (event) => {
-      // Prevent the click event from bubbling up to the card
       event.stopPropagation();
-
-      // Your pin button logic here (e.g., moving the card to the top)
+      const taskId = event.target.closest('.task').dataset.taskId;
+      showDeleteConfirmation(taskId);
     });
   });
 }
@@ -112,38 +322,11 @@ const exampleTask = {
 
 // updateTaskPopup(exampleTask);
 
-// createTaskPopup();
-
-// function createInvoiceDiv(invoice) {
-//   const div = document.createElement('div');
-//   let newTile = new task(invoice);
-//   allTasks.push(newTile)
-//   // div.textContent = `Name: ${invoice.Name}, Email: ${invoice._id}`;
-//   div.classList.add("task");
-//   return div;
-// }
-
 function createTaskDiv(task) {
   const taskElement = task.Task;
   allTasks.push(task);
   return taskElement;
 }
-
-// Function to fetch invoice items from the server and display them in the viewboard div
-// function displayInvoices() {
-//   const viewboardDiv = document.getElementById('viewboard');
-
-//   fetch('/invoices')
-//     .then(response => response.json())
-//     .then(invoices => {
-//       // Create divs for each invoice item and append them to the viewboard div
-//       invoices.forEach(invoice => {
-//         const div = createInvoiceDiv(invoice);
-//         viewboardDiv.appendChild(div);
-//       });
-//     })
-//     .catch(error => console.error('Error fetching invoices:', error));
-// }
 
 function displayTasks(callback) {
   const viewboardDiv = document.getElementById('viewboard');
@@ -153,7 +336,7 @@ function displayTasks(callback) {
     .then(invoices => {
       // Create Task instances for each task item and append them to the viewboard div
       invoices.forEach(invoice => {
-        const newTask = new task(invoice);
+        const newTask = new Task(invoice);
         const taskDiv = createTaskDiv(newTask);
         viewboardDiv.appendChild(taskDiv);
       });

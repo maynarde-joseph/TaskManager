@@ -1,4 +1,4 @@
-export default class task {
+export default class Task {
   #id
   #Name
   #Description
@@ -7,6 +7,7 @@ export default class task {
   #Priority
   #Notes
   #CompletedDate
+  #Pinned
   Task
 
   constructor(taskDetails) {
@@ -17,14 +18,16 @@ export default class task {
     this.#Completed = taskDetails.Completed
     this.#Priority = taskDetails.Priority
     this.#Notes = taskDetails.Notes
+    this.#Pinned = taskDetails.Pinned
     this.#CompletedDate = null // not intialiased on creation
     this.Task = this.createTaskElement()
   }
 
-  createTaskElement() {
+  createTaskElement() {    
     const taskDiv = document.createElement("div");
     taskDiv.classList.add("task");
-  
+    taskDiv.dataset.taskId = this.#id;
+
     const taskMainDiv = document.createElement("div");
     taskMainDiv.classList.add("task-main", "collapsible");
   
@@ -111,6 +114,14 @@ export default class task {
 
   get id() {
     return this.#id;
+  }
+
+  get Pinned() {
+    return this.#Pinned;
+  }
+
+  set Pinned(newPinned) {
+    this.#Pinned = newPinned;
   }
 
   get Name() {
