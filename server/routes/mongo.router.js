@@ -4,10 +4,16 @@ import { collections } from "../services/database.service.js";
 export const mongoRouter = express.Router();
 mongoRouter.use(express.json());
 
+const priorityOrder = {
+  "High": 3,
+  "Medium": 2,
+  "Low": 1
+};
+
 // Get all.
 mongoRouter.get("/", async (req, res) => {
   try {
-    const invoices = await collections.invoices.find().limit(50).toArray();
+    const invoices = await collections.invoices.find().toArray();
     res.status(200).send(invoices);
   } catch (error) {
     res.status(500).send(error.message);
@@ -26,7 +32,7 @@ mongoRouter.post("/create", async (req, res) => {
       Description,
       DueDate: new Date(DueDate), // Convert DueDate to a Date object
       Completed: false,
-      Priority,
+      Priority: priorityOrder[Priority],
       Notes
     };
 
@@ -77,17 +83,44 @@ mongoRouter.get("/query", async (req, res) => {
   }
 });
 
+// Sort
+mongoRouter.get("/sort", async (req, res) => {
+  try {
+    // Get sorting parameters from the request body
+    const key = req.body.key;
+    const order = req.body.order;
+    console.log(key)
+    console.log(order)
+    // Create the sorting criteria based on the key and order
+
+    // Retrieve invoices from the database and apply sorting
+    const invoices = await collections.invoices.find().sort({ [key]: order }).toArray();
+
+    // Send the sorted invoices as the response
+    res.status(200).send(invoices);
+  } catch (error) {
+    // Handle errors
+    res.status(500).send(error.message);
+  }
+});
+
 // Update item
 mongoRouter.put("/update/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const updateFields = req.body;
+    let updateFields = req.body;
     const query = { _id: new ObjectId(id) };
 
     if (updateFields.Completed === true) {
       updateFields.CompletedDate = new Date();
     }
 
+    if (updateFields.Priority) {
+      updateFields.Priority = priorityOrder[updateFields.Priority]
+    }
+
+    console.log(updateFields);
+    // if (updateFields.Priority)
     const result = await collections.invoices.updateOne(query, {
       $set: updateFields,
     });
