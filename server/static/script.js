@@ -36,8 +36,6 @@ searchInput.addEventListener('keydown', (event) => {
   }
 });
 
-
-
 // YEHHH MATE
 const createTaskPopup = async () => {
   const { value: formValues } = await Swal.fire({
@@ -112,7 +110,10 @@ function showSortingPopup() {
     </div>
     <div>
       <label for="sortFor">Sort For:</label>
-      <input type="text" id="sortFor" name="sortFor" placeholder="ASC or DESC">
+      <select id="sortFor" name="sortFor">
+        <option value="ASC">ASC</option>
+        <option value="DESC">DESC</option>
+      </select>
     </div>
   `;
 
@@ -208,6 +209,12 @@ function showFilteringPopup() {
 // WORKS LIKE A CHARM MATE
 function showPinConfirmation(taskId) {
   // Use Swal.fire() to show the popup
+  let booleen;
+  if (getTaskById(taskId).Pinned === true) {
+    booleen = false;
+  } else {
+    booleen = true;
+  }
   Swal.fire({
     title: 'Are you sure you want to pin?',
     icon: 'warning',
@@ -218,10 +225,25 @@ function showPinConfirmation(taskId) {
     cancelButtonText: 'Cancel',
     heightAuto: false,
   }).then((result) => {
-    // Check if the user clicked the "Yes, pin it!" button
     if (result.isConfirmed) {
-      console.log(`Task with ID ${taskId} pinned!`);
-      // Perform further actions related to pinning the task
+      fetch(`/invoices/update/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Pinned: booleen }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Task with ID ${taskId} Pinned!`);
+            displayTasks(handleStyles)
+          } else {
+            console.error('Failed to Pinned task:', response.statusText);
+          }
+        })
+        .catch((error) => {
+          console.error('Error Pinned task:', error);
+        });
     }
   });
 }
@@ -241,7 +263,21 @@ function showDeleteConfirmation(taskId) {
   }).then((result) => {
     // Check if the user clicked the "Yes, pin it!" button
     if (result.isConfirmed) {
-      console.log(`Task with ID ${taskId} deleted!`);
+      // If confirmed, make a DELETE request to the server
+      fetch(`/invoices/${taskId}`, {
+        method: 'DELETE',
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Task with ID ${taskId} deleted!`);
+            // Optionally, update the UI to reflect the deletion
+          } else {
+            console.error('Failed to delete task:', response.statusText);
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting task:', error);
+        });
     }
   });
 }
@@ -249,6 +285,12 @@ function showDeleteConfirmation(taskId) {
 // CHECKING MATE
 function showCheckConfirmation(taskId) {
   // Use Swal.fire() to show the popup
+  let booleen;
+  if (getTaskById(taskId).Completed === true) {
+    booleen = false;
+  } else {
+    booleen = true;
+  }
   Swal.fire({
     title: 'Are you sure you want to mark as complete?',
     icon: 'warning',
@@ -259,9 +301,25 @@ function showCheckConfirmation(taskId) {
     cancelButtonText: 'Cancel',
     heightAuto: false,
   }).then((result) => {
-    // mark as complete if the user clicked the "Yes, mark as complete it!" button
     if (result.isConfirmed) {
-      console.log(`Task with ID ${taskId} marked as complete!`);
+      fetch(`/invoices/update/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Completed: booleen }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Task with ID ${taskId} Completed!`);
+            displayTasks(handleStyles)
+          } else {
+            console.error('Failed to Completed task:', response.statusText);
+          }
+        })
+        .catch((error) => {
+          console.error('Error Pinned task:', error);
+        });
     }
   });
 }
@@ -312,16 +370,6 @@ function handleStyles() {
   });
 }
 
-// Example task object (replace this with your actual task object)
-const exampleTask = {
-  Name: 'Example Task',
-  Description: 'This is an example task',
-  DueDate: '2024-01-30',
-  Completed: false
-};
-
-// updateTaskPopup(exampleTask);
-
 function createTaskDiv(task) {
   const taskElement = task.Task;
   allTasks.push(task);
@@ -329,22 +377,34 @@ function createTaskDiv(task) {
 }
 
 function displayTasks(callback) {
+  allTasks = [];
   const viewboardDiv = document.getElementById('viewboard');
 
-  fetch('/invoices')
+  // Sorting parameters
+  const key = 'DueDate'; // Sort by DueDate field
+  const order = '1'; // Ascending order
+
+  // Construct the URL with sorting parameters in the query string
+  const url = `/invoices/sort?key=${key}&order=${order}`;
+
+  fetch(url)
     .then(response => response.json())
     .then(invoices => {
-      // Create Task instances for each task item and append them to the viewboard div
+      // Clear the viewboardDiv before adding sorted tasks
+      viewboardDiv.innerHTML = '';
+
+      // Create Task instances for each sorted task item and append them to the viewboard div
       invoices.forEach(invoice => {
         const newTask = new Task(invoice);
         const taskDiv = createTaskDiv(newTask);
         viewboardDiv.appendChild(taskDiv);
       });
+
       if (typeof callback === 'function') {
         callback();
       }
     })
-    .catch(error => console.error('Error fetching tasks:', error));
+    .catch(error => console.error('Error fetching and displaying sorted tasks:', error));
 }
 
 // Call the displayInvoices function when the DOM content is loaded

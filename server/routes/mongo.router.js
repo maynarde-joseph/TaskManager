@@ -88,8 +88,8 @@ mongoRouter.get("/query", async (req, res) => {
 mongoRouter.get("/sort", async (req, res) => {
   try {
     // Get sorting parameters from the request body
-    const key = req.body.key;
-    const order = req.body.order;
+    const key = req.query.key;
+    const order = req.query.order;
     console.log(key)
     console.log(order)
     // Create the sorting criteria based on the key and order
@@ -111,9 +111,12 @@ mongoRouter.put("/update/:id", async (req, res) => {
     const id = req.params.id;
     let updateFields = req.body;
     const query = { _id: new ObjectId(id) };
+    console.log(updateFields)
 
     if (updateFields.Completed === true) {
       updateFields.CompletedDate = new Date();
+    } else if (updateFields.Completed === false) {
+      updateFields.CompletedDate = null;
     }
 
     if (updateFields.Priority) {
@@ -126,11 +129,13 @@ mongoRouter.put("/update/:id", async (req, res) => {
       $set: updateFields,
     });
 
+    console.log("IM HERE")
     if (result.matchedCount === 0) {
       res.status(404).send(`Invoice with id ${id} does not exist`);
     } else if (result.modifiedCount > 0) {
       res.status(200).send(`Successfully updated invoice with id ${id}`);
     } else {
+      console.log("THE REAL ERROR")
       res.status(404).send(`Invoice with id ${id} not updated`);
     }
   } catch (error) {
