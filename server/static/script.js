@@ -54,10 +54,8 @@ const updateTaskPopup = async (task) => {
 
 function handleStyles() {
   var coll = document.getElementsByClassName("collapsible");
-  var i;
-
   // https://www.w3schools.com/howto/howto_js_collapsible.asp
-  for (i = 0; i < coll.length; i++) {
+  for (let i = 0; i < coll.length; i++) {
     coll[i].addEventListener("click", function() {
       this.classList.toggle("active");
       var content = this.nextElementSibling;
@@ -75,6 +73,27 @@ function handleStyles() {
   allCssTasks.forEach(xtask => {
     const pinButton = xtask.querySelector('.pin-button');
     pinButton.addEventListener('click', (event) => {
+      // Prevent the click event from bubbling up to the card
+      event.stopPropagation();
+
+      // Your pin button logic here (e.g., moving the card to the top)
+    });
+    const comButton = xtask.querySelector('.complete-button');
+    comButton.addEventListener('click', (event) => {
+      // Prevent the click event from bubbling up to the card
+      event.stopPropagation();
+
+      // Your pin button logic here (e.g., moving the card to the top)
+    });
+    const ediButton = xtask.querySelector('.edit-button');
+    ediButton.addEventListener('click', (event) => {
+      // Prevent the click event from bubbling up to the card
+      event.stopPropagation();
+
+      // Your pin button logic here (e.g., moving the card to the top)
+    });
+    const delButton = xtask.querySelector('.delete-button');
+    delButton.addEventListener('click', (event) => {
       // Prevent the click event from bubbling up to the card
       event.stopPropagation();
 

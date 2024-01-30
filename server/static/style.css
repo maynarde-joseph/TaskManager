@@ -32,12 +32,12 @@ body{
   background-color:rgb(124, 178, 225);
   color: #444;
   cursor: pointer;
-  padding: 13px;
+  padding: 12px;
   width: 100%;
   border: none;
   text-align: left;
   outline: none;
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 20px;
 }
 
@@ -104,32 +104,14 @@ body{
   border: none;
   margin-top: 10px;
   margin-left: 16px;
+  margin-right: 100px;
   font-size: 14px;
   height: 60%;
   border-radius: 3px;
 }
 
-.filter {
-  width: 20%;
-  height: 60%;
-  border-radius: 3px;
-  margin-top: 10px;
-  margin-left: 100px;
-  font-size: 14px;
-  background: #cfc8c1;
-  text-decoration: none;
-  color: #f9f6f2;
-  cursor: pointer;
-  display: block;
-  display: flex; /* Use flexbox */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  text-align: center; /* Center text within button */
-  font-weight:normal;
-}
-
-.AddNew {
-  width: 20%;
+.sort {
+  width: 10%;
   height: 60%;
   border-radius: 3px;
   margin-top: 10px;
@@ -147,17 +129,58 @@ body{
   font-weight:normal;
 }
 
-.pin-button {
-  flex: 1 1 1%;
+.filter {
+  width: 12%;
+  height: 60%;
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 14px;
+  background: #cfc8c1;
+  text-decoration: none;
+  color: #f9f6f2;
+  cursor: pointer;
+  display: block;
+  display: flex; /* Use flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text within button */
+  font-weight:normal;
 }
+
+.AddNew {
+  width: 15%;
+  height: 60%;
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 14px;
+  background: #cfc8c1;
+  text-decoration: none;
+  color: #f9f6f2;
+  cursor: pointer;
+  display: block;
+  display: flex; /* Use flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text within button */
+  font-weight:normal;
+}
+
+/* .pin-button {
+  flex: 1 1 1%;
+} */
 
 .maininfo {
-  flex: 1 1 99%;
+  flex: 1 1 45%;
 }
 
-/* .task {
-
-} */
+.task {
+  padding-left: 2.5px;
+  padding-right: 2.5px;
+  padding-top: 1.5px;
+  padding-bottom: 3.5px;
+}
 
 .task-main {
   display: flex;
@@ -178,8 +201,6 @@ body{
   overflow-y: auto;
   box-sizing: border-box;
   max-height: 88%;
-  gap: 5px;
-
 }
 
 #textbox{
@@ -197,4 +218,29 @@ body{
 
 .info {
   padding-left: 10px;
+}
+
+.addtional-notes {
+  border:1px solid black;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.main-decrp, .addtional-notes {
+  font-size: 14px;
+}
+
+.duedate {
+  /* flex: 1 1 20%; */
+  margin-right: 5px;
+}
+
+.side-button {
+  margin-right: 5px;
+}
+
+.month {
+  padding-left: 2.5px;
+  padding-right: 2.5px;
 }
