@@ -74,8 +74,8 @@ mongoRouter.delete("/:id", async (req, res) => {
 
 // Query item. Format: {$type: `string`}
 mongoRouter.get("/query", async (req, res) => {
-  const queryBy = req.body.queryBy;
-  const queryFor = req.body.queryFor;
+  const queryBy = req.query.queryBy;
+  const queryFor = req.query.queryFor;
   try {
     const invoices = await collections.invoices.find({ [queryBy]: queryFor }).toArray();
     res.status(200).send(invoices);

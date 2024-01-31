@@ -104,10 +104,29 @@ body{
   border: none;
   margin-top: 10px;
   margin-left: 16px;
-  margin-right: 100px;
+  margin-right: 80px;
   font-size: 14px;
   height: 60%;
   border-radius: 3px;
+}
+
+.refresh {
+  width: 5%;
+  height: 60%;
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 14px;
+  background: #cfc8c1;
+  text-decoration: none;
+  color: #f9f6f2;
+  cursor: pointer;
+  display: block;
+  display: flex; /* Use flexbox */
+  align-items: center;
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text within button */
+  font-weight:normal;
 }
 
 .sort {
@@ -130,7 +149,7 @@ body{
 }
 
 .filter {
-  width: 12%;
+  width: 10%;
   height: 60%;
   border-radius: 3px;
   margin-top: 10px;

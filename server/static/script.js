@@ -3,6 +3,29 @@ import Task from './classes/tasks.js'
 
 let allTasks = [];
 
+const priorityOrder = {
+  3: "High",
+  2: "Medium",
+  1: "low"
+};
+
+// if i ever want to make sorts and filters stay same after preforming action like 
+// delte, pin, and complete.
+
+// let useSort = true;
+// let sortByGlobal = null;
+// let sortForGlobal = null;
+// let filterByGlobal = null;
+// let filterForGlobal = null;
+
+const refreshButton = document.querySelector('.refresh');
+
+refreshButton.addEventListener('click', () => {
+  // showrefreshingPopup()
+  displayTasks(handleStyles)
+  console.log('refresh button clicked');
+});
+
 const sortButton = document.querySelector('.sort');
 
 sortButton.addEventListener('click', () => {
@@ -29,12 +52,39 @@ const searchInput = document.querySelector('.topnav input[type="text"]');
 searchInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     event.preventDefault();
-
+    const searchType = "Name"
     const searchQuery = searchInput.value.trim();
-
+    queryItems(searchType, searchQuery, handleStyles)
     console.log(`Search query: ${searchQuery}`);
   }
 });
+
+// Query item. Format: {$type: `string`}
+async function queryItems(queryBy, queryFor, callback) {
+  const viewboardDiv = document.getElementById('viewboard');
+  allTasks = []
+  // Construct the URL with sorting parameters in the query string
+  const url = `/invoices/query?queryBy=${queryBy}&queryFor=${queryFor}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(invoices => {
+      // Clear the viewboardDiv before adding sorted tasks
+      viewboardDiv.innerHTML = '';
+
+      // Create Task instances for each sorted task item and append them to the viewboard div
+      invoices.forEach(invoice => {
+        const newTask = new Task(invoice);
+        const taskDiv = createTaskDiv(newTask);
+        viewboardDiv.appendChild(taskDiv);
+      });
+
+      if (typeof callback === 'function') {
+        callback();
+      }
+    })
+    .catch(error => console.error('Error fetching and displaying sorted tasks:', error));
+}
 
 // YEHHH MATE
 const createTaskPopup = async () => {
@@ -43,20 +93,47 @@ const createTaskPopup = async () => {
     html:
       '<input id="swal-input1" class="swal2-input" placeholder="Name">' +
       '<input id="swal-input2" class="swal2-input" placeholder="Description">' +
-      '<input id="swal-input3" class="swal2-input" placeholder="Due Date">',
+      '<input id="swal-input3" class="swal2-input" placeholder="Due Date">' +
+      '<select id="swal-input4" class="swal2-select" placeholder="Priority">' +
+      '  <option value="Low">Low</option>' +
+      '  <option value="Medium">Medium</option>' +
+      '  <option value="High">High</option>' +
+      '</select>' +
+      '<input id="swal-input5" class="swal2-input" placeholder="Notes">',
     focusConfirm: false,
     preConfirm: () => {
       return {
         Name: document.getElementById('swal-input1').value,
         Description: document.getElementById('swal-input2').value,
-        DueDate: document.getElementById('swal-input3').value
+        DueDate: document.getElementById('swal-input3').value,
+        Priority: document.getElementById('swal-input4').value,
+        Notes: document.getElementById('swal-input5').value,
+        Pinned: false // Default value for Pinned, can be changed if needed
       };
     }
   });
 
   if (formValues) {
     // Send formValues to your backend for creating a new task
-    console.log(formValues);
+    try {
+      const response = await fetch('/invoices/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formValues)
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        console.log(result); // Log the server response
+        displayTasks(handleStyles)
+      } else {
+        console.error('Failed to create task:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
   }
 };
 
@@ -68,24 +145,51 @@ const updateTaskPopup = async (taskx) => {
       '<input id="swal-input1" class="swal2-input" placeholder="Name" value="' + taskx.Name + '">' +
       '<input id="swal-input2" class="swal2-input" placeholder="Description" value="' + taskx.Description + '">' +
       '<input id="swal-input3" class="swal2-input" placeholder="Due Date" value="' + taskx.DueDate + '">' +
+      '<select id="swal-input4" class="swal2-select" placeholder="Priority">' +
+      '  <option value="Low"' + (taskx.Priority === 1 ? ' selected' : '') + '>Low</option>' +
+      '  <option value="Medium"' + (taskx.Priority === 2 ? ' selected' : '') + '>Medium</option>' +
+      '  <option value="High"' + (taskx.Priority === 3 ? ' selected' : '') + '>High</option>' +
+      '</select>' +
+      '<input id="swal-input5" class="swal2-input" placeholder="Notes" value="' + taskx.Notes + '">' +
       '<br>' +
-      '<input type="checkbox" id="swal-input4" class="swal2-checkbox" ' + (taskx.Completed ? 'checked' : '') + '> Completed',
+      '<input type="checkbox" id="swal-input6" class="swal2-checkbox" ' + (taskx.Completed ? 'checked' : '') + '> Completed',
     focusConfirm: false,
     preConfirm: () => {
       return {
         Name: document.getElementById('swal-input1').value,
         Description: document.getElementById('swal-input2').value,
         DueDate: document.getElementById('swal-input3').value,
-        Completed: document.getElementById('swal-input4').checked
+        Priority: document.getElementById('swal-input4').value,
+        Notes: document.getElementById('swal-input5').value,
+        Completed: document.getElementById('swal-input6').checked
       };
     }
   });
 
   if (formValues) {
     // Send formValues to your backend for updating the task
-    console.log(formValues);
+    try {
+      const response = await fetch(`/invoices/update/${getIdByTask(taskx)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formValues)
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        displayTasks(handleStyles)
+        console.log(result); // Log the server response
+      } else {
+        console.error('Failed to update task:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
   }
 };
+
 
 // Helper function
 function getTaskById(idValue) {
@@ -103,9 +207,9 @@ function showSortingPopup() {
     <div>
       <label for="sortBy">Sort By:</label>
       <select id="sortBy" name="sortBy">
-        <option value="name">Name</option>
-        <option value="date">Date</option>
-        <option value="priority">Priority</option>
+        <option value="Name">Name</option>
+        <option value="DueDate">Date</option>
+        <option value="Priority">Priority</option>
       </select>
     </div>
     <div>
@@ -143,6 +247,7 @@ function showSortingPopup() {
       console.log('Sorting confirmed!');
       console.log('Sort By:', result.value.sortBy);
       console.log('Sort For:', result.value.sortFor);
+      sortItems(result.value.sortBy, result.value.sortFor, handleStyles)
       // Perform further actions with the sorting criteria
     } else {
       console.log('Sorting canceled.');
@@ -270,6 +375,7 @@ function showDeleteConfirmation(taskId) {
         .then((response) => {
           if (response.ok) {
             console.log(`Task with ID ${taskId} deleted!`);
+            displayTasks(handleStyles)
             // Optionally, update the UI to reflect the deletion
           } else {
             console.error('Failed to delete task:', response.statusText);
@@ -386,6 +492,41 @@ function displayTasks(callback) {
 
   // Construct the URL with sorting parameters in the query string
   const url = `/invoices/sort?key=${key}&order=${order}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(invoices => {
+      // Clear the viewboardDiv before adding sorted tasks
+      viewboardDiv.innerHTML = '';
+
+      // Create Task instances for each sorted task item and append them to the viewboard div
+      invoices.forEach(invoice => {
+        const newTask = new Task(invoice);
+        const taskDiv = createTaskDiv(newTask);
+        viewboardDiv.appendChild(taskDiv);
+      });
+
+      if (typeof callback === 'function') {
+        callback();
+      }
+    })
+    .catch(error => console.error('Error fetching and displaying sorted tasks:', error));
+}
+
+// Sort items
+async function sortItems(key, order, callback) {
+  allTasks = [];
+  const viewboardDiv = document.getElementById('viewboard');
+  let newOrder;
+  // Sorting parameters
+  if (order == "ASC") {
+    newOrder = '1'
+  } else {
+    newOrder = '-1'
+  }
+
+  // Construct the URL with sorting parameters in the query string
+  const url = `/invoices/sort?key=${key}&order=${newOrder}`;
 
   fetch(url)
     .then(response => response.json())
