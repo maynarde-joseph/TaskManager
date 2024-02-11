@@ -2,6 +2,10 @@
 
 This is a full-stack task management application built with Express.js, MongoDB, and JavaScript. It allows users to manage tasks by creating, updating, sorting, filtering, and deleting them.
 
+## Important Note
+
+This code is very basic and needs heavy refactoring it is not a completed project but shows the ability to use CSS, HTML, and JavaScript.
+
 ## Features
 
 - **Search**: Users can search the database for a task of specific name.
